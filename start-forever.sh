@@ -1,2 +1,2 @@
 source ./env
-PORT=$EARTHQUAKES_PORT forever -a --uid earthquakes.benjie.me start bin/www
+PORT=3012 forever -a --uid earthquakes.benjie.me start bin/www
