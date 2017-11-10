@@ -24,7 +24,6 @@
     "morgan": "~1.8.1",
     "papaparse": "^4.3.6",
     "pug": "~2.0.0-beta11",
-    "semantic-ui": "^2.2.13",
     "serve-favicon": "~2.4.2",
     "wellknown": "^0.5.0"
   }
