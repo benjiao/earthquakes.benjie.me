@@ -28,7 +28,8 @@ gulp.task('images', function() {
     return gulp
         .src([
             'assets/images/**/*.png',
-            'assets/images/**/*.jpg'
+            'assets/images/**/*.jpg',
+            'assets/images/**/*.gif'
         ])
         .pipe(gulp.dest('build/images'))
 });
@@ -59,6 +60,7 @@ gulp.task('js', function(){
 gulp.task('vendor-css', function(){
 
     const VENDOR_CSS_FILES = [
+        'node_modules/semantic-ui-css/semantic.css',
         'node_modules/leaflet/dist/leaflet.css',
         'node_modules/leaflet.markercluster/dist/MarkerCluster.css',
         'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css'
@@ -76,11 +78,11 @@ gulp.task('vendor-js', function(){
 
     const VENDOR_JS_FILES = [
         'node_modules/jquery/dist/jquery.min.js',
+        'node_modules/semantic-ui-css/semantic.js',
+        'node_modules/vue/dist/vue.js',
         'node_modules/lodash/core.js',
         'node_modules/leaflet/dist/leaflet.js',
         'node_modules/leaflet.markercluster/dist/leaflet.markercluster.js',
-        'node_modules/papaparse/papaparse.min.js',
-        'node_modules/wellknown/wellknown.js',
     ];
 
     return gulp

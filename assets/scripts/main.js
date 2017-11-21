@@ -3,51 +3,7 @@ var defaultMarker = L.icon({
     shadowUrl: '/static/images/marker-shadow.png'
 })
 
-window.DataHandler = {
-    data: [],
-    filters: {
-        bbox: []
-    },
 
-    fetchData: function(callback){
-        var self = this;
-
-        // TODO: Replace with actual webservice
-        $.get("https://raw.githubusercontent.com/benjiao/significant-earthquakes/master/earthquakes.csv", function(res){
-            var parsedData = Papa.parse(res, {
-                header: true,
-            }).data;
-
-            var geoJsonData = _.map(parsedData, function(item) {
-
-                try {
-                    var geometry = wellknown.parse(item.location);
-                } catch (e){
-                    var location = null;
-                }
-
-                return {
-                    type: "Feature",
-                    geometry: geometry,
-                    properties: {
-                        "name": item.name,
-                        "date": item.year
-                    }
-                };
-            });
-
-            // Removes null (we do not need items without geometry)
-            geoJsonData = _.filter(geoJsonData, function(n) {
-                return n.geometry != null;
-            })
-
-            self.data = geoJsonData;
-            callback(geoJsonData);
-        });
-    }
-};
-
-// A container for all my map elements
 window.MainMap = {
     map: null,
     earthquakeFeatureGroup: null,
@@ -63,34 +19,97 @@ window.MainMap = {
     },
 
     setEarthquakeFeatures: function(data) {
-        // Accepts array of GeoJSON features
 
+        // Accepts array of GeoJSON features
         var self = this;
+
+
+        try {
+            self.map.removeLayer(self.earthquakeFeatureGroup);
+        } catch (e) {
+        }
 
         self.earthquakeFeatureGroup = L.markerClusterGroup();
 
-        _.each(data, function(d){
-            var marker = L.marker(
-                [d.geometry.coordinates[1], d.geometry.coordinates[0]],
-                {
-                    icon: defaultMarker
-                }
-            );
+        _.each(data.features, function(d){
+            if (d.geometry != null) {
+                var marker = L.marker(
+                    [d.geometry.coordinates[1], d.geometry.coordinates[0]],
+                    {
+                        icon: defaultMarker
+                    }
+                );
 
-            marker.bindPopup(d.properties.name + " (" + d.properties.date + ")");
-            self.earthquakeFeatureGroup.addLayer(marker);
+                marker.bindPopup(
+                    "<b>" + d.properties.name +
+                    "</b> <br />(" + d.properties.date +
+                    ")<br /><br /> Magnitude: " + d.properties.magnitude +
+                    "<br /> Intensity: " + d.properties.intensity);
+                self.earthquakeFeatureGroup.addLayer(marker);
+            }
         });
 
         self.map.addLayer(self.earthquakeFeatureGroup);
-
     }
 }
+
+
+function refreshData(callback) {
+    var url = "http://gs.benjie.me/geoserver/GmE205/ows";
+    
+    // Build CQL query
+    filters = [
+        'date IS NOT NULL'
+    ];
+
+    if ($("#filter-magnitude-min").val()) {
+        filters.push("magnitude > " + $("#filter-magnitude-min").val());
+    }
+
+    if ($("#filter-magnitude-max").val()) {
+        filters.push("magnitude < " + $("#filter-magnitude-max").val());
+    }
+
+    if ($("#filter-intensity-min").val()) {
+        filters.push("intensity > " + $("#filter-intensity-min").val());
+    }
+
+    if ($("#filter-intensity-max").val()) {
+        filters.push("intensity < " + $("#filter-intensity-max").val());
+    }
+
+    var params = {
+        service: "WFS",
+        version: "1.0.0",
+        request: "GetFeature",
+        typeName: "GmE205:earthquake",
+        outputFormat: "application/json",
+    }
+
+    if (filters.length > 0) {
+        params['CQL_FILTER'] = filters.join(" AND ")
+    }
+
+
+    console.log(params);
+
+    $.get(url, params, function(res){
+        $('#count-div').text(res.totalFeatures);
+        MainMap.setEarthquakeFeatures(res);
+
+        callback();
+    });
+}
+
+$('#filter-form').on('submit', function(e){
+    e.preventDefault();
+    refreshData();
+});
 
 $(function() {
     MainMap.init();
     MainMap.earthquakesLayerGroup = L.layerGroup();
-
-    DataHandler.fetchData(function(earthquakes) {
-        MainMap.setEarthquakeFeatures(earthquakes);
-    })
+    refreshData(function(){
+        $('#loading-div').removeClass('active');
+    });
 })
