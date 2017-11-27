@@ -8,6 +8,7 @@
   "dependencies": {
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
+    "d3": "^4.12.0",
     "debug": "~2.6.3",
     "express": "~4.15.2",
     "gulp": "^3.9.1",
@@ -27,6 +28,7 @@
     "pug": "~2.0.0-beta11",
     "semantic-ui-css": "^2.2.12",
     "serve-favicon": "~2.4.2",
+    "simpleheat": "^0.4.0",
     "wellknown": "^0.5.0"
   }
 }

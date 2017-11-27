@@ -83,6 +83,10 @@ gulp.task('vendor-js', function(){
         'node_modules/lodash/core.js',
         'node_modules/leaflet/dist/leaflet.js',
         'node_modules/leaflet.markercluster/dist/leaflet.markercluster.js',
+        'node_modules/d3/build/d3.js',
+        'node_modules/lodash/core.js',
+        'node_modules/simpleheat/simpleheat.js',
+        'vendor/Leaflet.heat/src/HeatLayer.js',
     ];
 
     return gulp
