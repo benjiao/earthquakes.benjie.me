@@ -1,0 +1,12 @@
+extends layout
+
+block content
+
+  #loading-div.ui.active.dimmer
+    .ui.huge.text.loader
+      | Fetching earthquake data...
+
+  #main-map
+
+block js
+  script(src='/static/js/timelapse.min.js')

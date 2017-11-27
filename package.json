@@ -28,6 +28,7 @@
     "pug": "~2.0.0-beta11",
     "semantic-ui-css": "^2.2.12",
     "serve-favicon": "~2.4.2",
+    "simpleheat": "^0.4.0",
     "wellknown": "^0.5.0"
   }
 }
