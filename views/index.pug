@@ -1,41 +1,41 @@
-doctype html
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/static/css/vendor.min.css')
-    link(rel='stylesheet', href='/static/css/main.min.css')
-  body
-    #loading-div.ui.active.dimmer
-      .ui.huge.text.loader
-        | Fetching earthquake data...
+extends layout
 
-    #earthquakes.ui.stackable.grid
-        .three.wide.fitted.column
+block css
+  link(rel='stylesheet', href='/static/css/main.min.css')
 
-            form.ui.form#filter-form
-              .field
-                label Magnitude
-                .two.fields
-                  .field
-                    input(type="text", placeholder="Min", id="filter-magnitude-min")
-                  .field
-                    input(type="text", placeholder="Max", id="filter-magnitude-max")
+block content
+  #loading-div.ui.active.dimmer
+    .ui.huge.text.loader
+      | Fetching earthquake data...
 
-              .field
-                label Intensity
-                .two.fields
-                  .field
-                    input(type="text", placeholder="Min", id="filter-intensity-min")
-                  .field
-                    input(type="text", placeholder="Max", id="filter-intensity-max")
+  #earthquakes.ui.stackable.grid
+      .three.wide.fitted.column
 
-              button.ui.button(type="submit") Submit
+          form.ui.form#filter-form
+            .field
+              label Magnitude
+              .two.fields
+                .field
+                  input(type="text", placeholder="Min", id="filter-magnitude-min")
+                .field
+                  input(type="text", placeholder="Max", id="filter-magnitude-max")
 
-              hr
-              div#count-div
-        .thirteen.wide.fitted.column
-            #main-map
+            .field
+              label Intensity
+              .two.fields
+                .field
+                  input(type="text", placeholder="Min", id="filter-intensity-min")
+                .field
+                  input(type="text", placeholder="Max", id="filter-intensity-max")
 
-  script(src='/static/js/vendor.min.js')
+            button.ui.button(type="submit") Submit
+
+            hr
+            div#count-div
+      .thirteen.wide.fitted.column
+          #main-map
+
+
+block js
   script(src='/static/js/main.min.js')
 
