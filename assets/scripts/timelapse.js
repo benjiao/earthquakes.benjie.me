@@ -94,4 +94,6 @@ $(function(){
           display_offset += 10;
       });
     });
+
   });
+});
