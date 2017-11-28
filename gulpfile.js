@@ -21,7 +21,8 @@ gulp.task('build', [
     'vendor-fonts',
     'images',
     'less',
-    'js'], function(){
+    'js',
+    'data'], function(){
 });
 
 gulp.task('images', function() {
@@ -32,6 +33,14 @@ gulp.task('images', function() {
             'assets/images/**/*.gif'
         ])
         .pipe(gulp.dest('build/images'))
+});
+
+gulp.task('data', function() {
+    return gulp
+        .src([
+            'assets/data/*',
+        ])
+        .pipe(gulp.dest('build/data'))
 });
 
 gulp.task('less', function() {
@@ -83,8 +92,6 @@ gulp.task('vendor-js', function(){
         'node_modules/lodash/core.js',
         'node_modules/leaflet/dist/leaflet.js',
         'node_modules/leaflet.markercluster/dist/leaflet.markercluster.js',
-        'node_modules/d3/build/d3.js',
-        'node_modules/lodash/core.js',
         'node_modules/simpleheat/simpleheat.js',
         'vendor/Leaflet.heat/src/HeatLayer.js',
     ];

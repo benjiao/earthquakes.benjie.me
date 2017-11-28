@@ -1,81 +1,97 @@
-var defaultMarker = L.icon({
-    iconUrl: '/static/images/marker-icon.png',
-    shadowUrl: '/static/images/marker-shadow.png'
-})
+var width = 960;
+var height = 500;
 
-window.MainMap = {
-    map: null,
-    earthquakeFeatureGroup: null,
+var svg = d3.select("svg")
 
-    init: function() {
-        this.map = L.map('main-map').setView([0, 90], 1);
+var projection = d3.geoEquirectangular()
+  .scale(width / 2 / Math.PI)
+  .translate([width / 2, height / 2])
 
-        L.tileLayer('https://api.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuamlhbyIsImEiOiJjaWc4NXl0c3MwMGZ4dWhtNXBrc2V6YjhuIn0.8y1VtL2RJZ3wi8Aam6cG8Q', {
-            attribution: " © <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
-            maxZoom: 18,
-            minZoom: 3,
-        }).addTo(this.map);
-    },
+var path = d3.geoPath()
+  .projection(projection);
 
-    setEarthquakeFeatures: function(features){
-        self = this;
+var graticule = d3.geoGraticule()
+    .step([10, 10]);
 
-        _.map(features, function(d){
-            var heat = L.heatLayer(d, {
-                radius: 25
-            }).addTo(self.map);
-        });
-    }
-}
+function fetchEarthquakeData(callback){
+  var url = "http://gs.benjie.me/geoserver/GmE205/ows";
+  
+  // Build CQL query
+  filters = [
+      'date IS NOT NULL'
+  ];
 
-function refreshData(callback) {
-    var url = "http://gs.benjie.me/geoserver/GmE205/ows";
-    
-    // Build CQL query
-    filters = [
-        'date IS NOT NULL'
-    ];
+  var params = {
+      service: "WFS",
+      version: "1.0.0",
+      request: "GetFeature",
+      typeName: "GmE205:earthquake",
+      outputFormat: "application/json",
+      sortBy: "date"
+  }
 
-    var params = {
-        service: "WFS",
-        version: "1.0.0",
-        request: "GetFeature",
-        typeName: "GmE205:earthquake",
-        outputFormat: "application/json",
-        sortBy: "date"
-    }
+  if (filters.length > 0) {
+      params['CQL_FILTER'] = filters.join(" AND ")
+  }
 
-    if (filters.length > 0) {
-        params['CQL_FILTER'] = filters.join(" AND ")
-    }
+  $.get(url, params, function(res){
+      var features_by_year = {};
 
-    $.get(url, params, function(res){
-        var features_by_year = {};
+      _.map(res.features, function(row){
+          var year = row.properties.year;
+          features_by_year[year] = features_by_year[year] || [];
 
-        _.map(res.features, function(row){
-            var year = row.properties.year;
-            features_by_year[year] = features_by_year[year] || [];
+          if(row.geometry) {
+              features_by_year[year].push([
+                row.geometry.coordinates[0],
+                row.geometry.coordinates[1]
+              ]);
+          }
+      });
 
-            if(row.geometry) {
-                features_by_year[year].push([
-                    row.geometry.coordinates[0],
-                    row.geometry.coordinates[1],
-                    0.25]);
-            }
-        });
-
-        callback(features_by_year);
+      callback(features_by_year);
     });
 }
 
-$(function() {
-    MainMap.init();
-    MainMap.earthquakesLayerGroup = L.layerGroup();
+$(function(){
 
-    refreshData(function(features){
-        $('#loading-div').removeClass('active');
-        console.log(features);
-        MainMap.setEarthquakeFeatures(features);
+  // Graticule lines
+   svg.append("path")
+    .datum(graticule)
+    .attr("class", "graticule")
+    .attr("d", path);
+
+  // Country boarders
+  var url = "/static/data/tm-world-borders.geojson";
+  d3.json(url, function(err, geojson) {
+    svg.append("path")
+      .attr("d", path(geojson))
+      .attr("class", "boundary")
+
+    // Earthquake Data
+    fetchEarthquakeData(function(data){
+
+      $('#loading-div').removeClass('active');
+
+      var display_offset = 0;
+
+      Object.keys(data).forEach(function(year) {
+          setTimeout(function(){
+            d3.selectAll("svg text").text(year);
+            
+            // svg.selectAll("circle").remove();
+
+            // Add Circles
+            svg.selectAll("circles")
+              .data(data[year]).enter()
+              .append("circle")
+              .attr("cx", function (d) { return projection(d)[0]; })
+              .attr("cy", function (d) { return projection(d)[1]; })
+              .attr("r", "1.5px")
+              .attr("fill", "#F14C38")
+          }, 10 + display_offset);
+
+          display_offset += 10;
+      });
     });
-
-})
+  });
