@@ -62,7 +62,7 @@ $(function(){
     .attr("d", path);
 
   // Country boarders
-  var url = "/static/data/tm-world-borders.geojson";
+  var url = "/static/data/tm-world-borders.json";
   d3.json(url, function(err, geojson) {
     svg.append("path")
       .attr("d", path(geojson))
