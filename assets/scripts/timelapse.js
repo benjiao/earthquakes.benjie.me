@@ -1,17 +1,20 @@
-var width = 960;
-var height = 500;
+window.earthquake_data = [];
 
-var svg = d3.select("svg")
+var width = $("#map").width()
 
-var projection = d3.geoEquirectangular()
-  .scale(width / 2 / Math.PI)
-  .translate([width / 2, height / 2])
+var mapRatio = .5
+var height = width * mapRatio;
 
-var path = d3.geoPath()
-  .projection(projection);
+var map = d3.select("#map");
 
-var graticule = d3.geoGraticule()
-    .step([10, 10]);
+var projection = d3.geoEquirectangular();
+
+projection.scale(width / 2 / Math.PI)
+projection.translate([width / 2, height / 2])
+
+var path = d3.geoPath().projection(projection);
+var graticule = d3.geoGraticule().step([10, 10]);
+
 
 function fetchEarthquakeData(callback){
   var url = "http://gs.benjie.me/geoserver/GmE205/ows";
@@ -39,10 +42,11 @@ function fetchEarthquakeData(callback){
 
       _.map(res.features, function(row){
           var year = row.properties.year;
-          features_by_year[year] = features_by_year[year] || [];
+          var decade = parseInt(year / 10);
+          features_by_year[decade] = features_by_year[decade] || [];
 
           if(row.geometry) {
-              features_by_year[year].push([
+              features_by_year[decade].push([
                 row.geometry.coordinates[0],
                 row.geometry.coordinates[1]
               ]);
@@ -53,46 +57,56 @@ function fetchEarthquakeData(callback){
     });
 }
 
+
+function showDecade(decade) {
+  map.selectAll("circle").remove();
+
+  // Add Circles
+  map.selectAll("circles")
+      .data(window.earthquake_data[decade]).enter()
+      .append("circle")
+      .attr("cx", function (d) { return projection(d)[0]; })
+      .attr("cy", function (d) { return projection(d)[1]; })
+      .attr("r", "1.5px")
+      .attr("fill", "#F14C38");
+}
+
+function startTimelapse(){
+
+  var display_offset = 0;
+  Object.keys(window.earthquake_data).forEach(function(decade) {
+
+      setTimeout(function(){
+        showDecade(decade);
+        display_offset += 300;
+      }, 300 + display_offset);
+
+  });
+}
+
+
 $(function(){
 
   // Graticule lines
-   svg.append("path")
+   map.append("path")
     .datum(graticule)
     .attr("class", "graticule")
     .attr("d", path);
 
   // Country boarders
   var url = "/static/data/tm-world-borders.json";
+
   d3.json(url, function(err, geojson) {
-    svg.append("path")
+    map.append("path")
       .attr("d", path(geojson))
       .attr("class", "boundary")
 
     // Earthquake Data
     fetchEarthquakeData(function(data){
 
+      window.earthquake_data = data;
       $('#loading-div').removeClass('active');
-
-      var display_offset = 0;
-
-      Object.keys(data).forEach(function(year) {
-          setTimeout(function(){
-            d3.selectAll("svg text").text(year);
-            
-            // svg.selectAll("circle").remove();
-
-            // Add Circles
-            svg.selectAll("circles")
-              .data(data[year]).enter()
-              .append("circle")
-              .attr("cx", function (d) { return projection(d)[0]; })
-              .attr("cy", function (d) { return projection(d)[1]; })
-              .attr("r", "1.5px")
-              .attr("fill", "#F14C38")
-          }, 10 + display_offset);
-
-          display_offset += 10;
-      });
+      startTimelapse();
     });
 
   });

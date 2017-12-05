@@ -2429,6 +2429,10 @@ semantic-ui-css@^2.2.12:
   dependencies:
     jquery x.*
 
+semantic-ui-range@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/semantic-ui-range/-/semantic-ui-range-1.0.1.tgz#7788cc754a55e4085b775953ec2dbbaf86b0fff5"
+
 semver-greatest-satisfied-range@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/semver-greatest-satisfied-range/-/semver-greatest-satisfied-range-1.1.0.tgz#13e8c2658ab9691cb0cd71093240280d36f77a5b"

@@ -11,7 +11,7 @@ router.get('/heatmap', function(req, res, next) {
 });
 
 router.get('/timelapse', function(req, res, next) {
-  res.render('timelapse', { title: 'Earthquake Timelapse' });
+  res.render('timelapse-leaflet', { title: 'Earthquake Timelapse' });
 });
 
 module.exports = router;

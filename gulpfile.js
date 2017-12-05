@@ -70,6 +70,7 @@ gulp.task('vendor-css', function(){
 
     const VENDOR_CSS_FILES = [
         'node_modules/semantic-ui-css/semantic.css',
+        'node_modules/semantic-ui-range/range.css',
         'node_modules/leaflet/dist/leaflet.css',
         'node_modules/leaflet.markercluster/dist/MarkerCluster.css',
         'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css'
@@ -88,6 +89,7 @@ gulp.task('vendor-js', function(){
     const VENDOR_JS_FILES = [
         'node_modules/jquery/dist/jquery.min.js',
         'node_modules/semantic-ui-css/semantic.js',
+        'node_modules/semantic-ui-range/range.js',
         'node_modules/vue/dist/vue.js',
         'node_modules/lodash/core.js',
         'node_modules/leaflet/dist/leaflet.js',

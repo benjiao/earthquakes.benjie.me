@@ -10,8 +10,10 @@ block content
     .ui.huge.text.loader
       | Fetching earthquake data...
 
-  svg(width="100%" height="500")
-    text(class="date-text" x="35" y="445" font-family="Verdana" font-size="30" fill="#144955")
+  svg#map
+
+  .ui.segment#control-panel
+
 
 block js
   script(src='https://d3js.org/d3.v4.min.js')
