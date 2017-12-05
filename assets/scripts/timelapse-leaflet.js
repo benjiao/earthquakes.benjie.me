@@ -95,6 +95,7 @@ $(function(){
         console.log(data);
         $('#loading-div').removeClass('active');
         MainMap.earthquakes = data;
+        MainMap.showDecade(3);
     });
 
     // Initialize Date Slider
@@ -106,5 +107,5 @@ $(function(){
           $('#date-header').html("Year " + (value * 10) + " - " + ((value + 1) * 10) + " AD") ;
           MainMap.showDecade(value);
         }
-      });
+    });
 })
