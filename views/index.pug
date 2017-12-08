@@ -1,15 +1,31 @@
 extends layout
 
 block css
-  link(rel='stylesheet', href='/static/css/main.min.css')
+  link(rel='stylesheet', href='/static/css/index.min.css')
+
 
 block content
-  #loading-div.ui.active.dimmer
-    .ui.huge.text.loader
-      | Fetching earthquake data...
+    .ui.inverted.vertical.masthead.center.aligned.segment
+        .ui.text.container
+            h1.ui.inverted.header Historical Earthquakes
+            h2 An Interactive Web Map of Earthquakes since 30 A.D.
+    .ui.vertical.segment.link-section
+        .ui.equal.width.stackable.grid
+            .center.aligned.row
+                .column
+                    h2 Clusters
+                    a(href="/clusters")
+                        img.ui.bordered.fluid.image(src="/static/images/screenshot-clustered.png")
 
-  #main-map
+                .column
+                    h2 Heatmap
+                    a(href="/heatmap")
+                        img.ui.bordered.fluid.image(src="/static/images/screenshot-heatmap.png")
+
+                .column
+                    h2 Timelapse
+                    a(href="/timelapse")
+                        img.ui.bordered.fluid.image(src="/static/images/screenshot-timelapse.png")
 
 
 block js
-  script(src='/static/js/clusters.min.js')
