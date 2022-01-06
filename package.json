@@ -6,10 +6,10 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "body-parser": "~1.17.1",
+    "body-parser": "^1.18.3",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
-    "express": "~4.15.2",
+    "express": "^4.16.4",
     "gulp": "^3.9.1",
     "gulp-cli": "^1.4.0",
     "gulp-concat": "^2.6.1",
@@ -23,7 +23,7 @@
     "leaflet.heat": "^0.2.0",
     "leaflet.markercluster": "^1.2.0",
     "lodash": "^4.17.4",
-    "morgan": "~1.8.1",
+    "morgan": "^1.9.1",
     "pug": "~2.0.0-beta11",
     "semantic-ui-css": "^2.2.12",
     "semantic-ui-range": "^1.0.1",

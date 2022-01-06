@@ -1,6 +1,6 @@
 # Dependencies
 
-- NodeJS and NPM
+- NodeJS (v8.11.2) and NPM
 - Gulp
 
 # Installation
